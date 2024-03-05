@@ -7,33 +7,36 @@ on:
     branches: [ "master" ]
 
 jobs:
-  steps:
-    - uses: actions/checkout@v3
-      name: Check out code
+  build:
+    runs-on: ubuntu-latest
       
-    - name: Increment version
-      run: |
-        # Read version from version.txt
-        version=$(cat version.txt)
-        # Increment patch version
-        IFS='.' read -ra VER <<< "$version"
-        ((VER[2]++))
-        newVersion="${VER[0]}.${VER[1]}.${VER[2]}"
-        echo "New version: $newVersion"
-        #echo $newVersion > version.txt
-        echo "VERSION=$newVersion" >> $GITHUB_ENV
-    
-
-    - uses: mr-smithers-excellent/docker-build-push@v6
-      name: Build & push Docker image
-      with:
-        image: gilibee/hello-world-docker:${{ env.VERSION }}
-        tags: ${{ env.VERSION }}, latest
-        registry: registry-url.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Increment version
-      run: |
-        echo $newVersion > version.txt
-        echo "version updated: $newVersion"
+    steps:
+      - uses: actions/checkout@v3
+        name: Check out code
+        
+      - name: Increment version
+        run: |
+          # Read version from version.txt
+          version=$(cat version.txt)
+          # Increment patch version
+          IFS='.' read -ra VER <<< "$version"
+          ((VER[2]++))
+          newVersion="${VER[0]}.${VER[1]}.${VER[2]}"
+          echo "New version: $newVersion"
+          #echo $newVersion > version.txt
+          echo "VERSION=$newVersion" >> $GITHUB_ENV
+      
+  
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build & push Docker image
+        with:
+          image: gilibee/hello-world-docker:${{ env.VERSION }}
+          tags: ${{ env.VERSION }}, latest
+          registry: registry-url.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+  
+      - name: Increment version
+        run: |
+          echo $newVersion > version.txt
+          echo "version updated: $newVersion"
