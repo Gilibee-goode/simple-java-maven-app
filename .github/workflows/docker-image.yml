@@ -20,22 +20,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           DEFAULT_BUMP: patch
-
           
-      - name: Get next version
-        uses: reecetech/version-increment@2023.9.3
-        id: version
-#        with:
-#          scheme: semver
-#          increment: patch
-
-    
         
       - name: Build & push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: gilibee/hello-world-docker
-          tags: ${{ steps.version }}, latest
+          tags: ${{ steps.AutoTagger.outputs.new_tag }}
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
