@@ -25,7 +25,9 @@ jobs:
       - name: Get next version
         uses: reecetech/version-increment@2023.9.3
         id: version
-
+#        with:
+#          scheme: semver
+#          increment: patch
 
     
         
@@ -37,6 +39,5 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
 
 
