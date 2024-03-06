@@ -45,5 +45,5 @@ jobs:
       - name: Increment version
         run: |
           # Optionally: Update the version.txt file with the new version
-          echo $NEW_VERSION > version.txt
-          echo "version updated: $NEW_VERSION"
+          echo ${{ env.VERSION }} > version.txt
+          echo "version updated: ${{ env.VERSION }}"
