@@ -16,17 +16,20 @@ jobs:
         
       - name: Increment version
         run: |
-          # Read version from version.txt
-          version=$(cat version.txt)
+          # Read the version from version.txt
+          VERSION=$(cat version.txt)
+          echo "Original version: $VERSION"
           
-          # Increment patch version
-          IFS='.' read -ra VER <<< "$version"
-          ((VER[2]++))
-          newVersion="${VER[0]}.${VER[1]}.${VER[2]}"
-          echo "New version: $newVersion"
+          # Split the version number into array based on the '.' delimiter
+          IFS='.' read -ra VER <<< "$VERSION"
           
-          #echo $newVersion > version.txt
-          echo "VERSION=$newVersion" >> $GITHUB_ENV    
+          # Increment the patch version
+          PATCH=$((VER[2]+1))
+          NEW_VERSION="${VER[0]}.${VER[1]}.$PATCH"
+          echo "New version: $NEW_VERSION"
+          
+          # Expose the new version to the global environment for subsequent steps
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
   
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build & push Docker image
@@ -39,5 +42,6 @@ jobs:
   
       - name: Increment version
         run: |
-          echo $newVersion > version.txt
-          echo "version updated: $newVersion"
+          # Optionally: Update the version.txt file with the new version
+          echo $NEW_VERSION > version.txt
+          echo "version updated: $NEW_VERSION"
