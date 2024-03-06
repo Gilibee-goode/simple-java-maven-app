@@ -13,6 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Minor version for each merge
+        id: AutoTagger
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          
       - name: Get next version
         uses: reecetech/version-increment@2023.9.3
         id: version
@@ -20,7 +27,8 @@ jobs:
           scheme: semver
           increment: patch
 
-          
+    
+        
       - name: Build & push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
